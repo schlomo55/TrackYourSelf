@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "84448886615",
+    "firebase_url": "https://trackyourself-81e94.firebaseio.com",
+    "project_id": "trackyourself-81e94",
+    "storage_bucket": "trackyourself-81e94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84448886615:android:d1dfb953cdb50a20",
+        "android_client_info": {
+          "package_name": "com.trackyourself"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84448886615-gtsqsbiiug61v4tjqh1n3l6r6tm5grtg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trackyourself",
+            "certificate_hash": "7dda0d1bede42951e303b9adc62bbd6b6bba76a2"
+          }
+        },
+        {
+          "client_id": "84448886615-c6anl5l6tgm1obtsglq14laoi1vljana.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDztPJ69CVU7POo_5X5E_SRtDxROM_LyQw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84448886615-c6anl5l6tgm1obtsglq14laoi1vljana.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
