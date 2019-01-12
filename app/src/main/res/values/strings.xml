@@ -3,7 +3,7 @@
     <string name="tracking_enabled_notif">Tracking is currently enabled. Tap to cancel.</string>
     <string name="test_email">test@test.com</string>
     <string name="test_password">testpassword</string>
-    <string name="firebase_path">https://trackyourself-81e94.firebaseio.com</string>
+    <string name="firebase_path">trackyourself-81e94</string>
 </resources>
 
 
