@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.os.IBinder;
 import android.content.Intent;
@@ -29,11 +30,19 @@ import android.content.pm.PackageManager;
 import android.app.PendingIntent;
 import android.app.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.concurrent.Executor;
 
-public class TrackingService extends Service implements OnSuccessListener {
+public class TrackingService extends Service {
 
     private static final String TAG = TrackingService.class.getSimpleName();
+
+    private DAOtracking daoTracking;
+    private LocationCallback mLocationCallback;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,111 +52,39 @@ public class TrackingService extends Service implements OnSuccessListener {
     @Override
     public void onCreate() {
         super.onCreate();
-       // buildNotification();
-        loginToFirebase();
-    }
-
-//Create the persistent notification//
-
-    @SuppressLint("NewApi")
-    private void buildNotification() {
-        String stop = "stop";
-        registerReceiver(stopReceiver, new IntentFilter(stop));
-        PendingIntent broadcastIntent = PendingIntent.getBroadcast(
-                this, 0, new Intent(stop), PendingIntent.FLAG_UPDATE_CURRENT);
-
-// Create the persistent notification//
-        Notification.Builder builder = new Notification.Builder(this)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.tracking_enabled_notif))
-                .setOngoing(true)
-                .setContentIntent(broadcastIntent)
-                .setSmallIcon(R.drawable.tracking_enabled);
-        startForeground(1, builder.build());
-    }
-
-    protected BroadcastReceiver stopReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-//Unregister the BroadcastReceiver when the notification is tapped//
-
-            unregisterReceiver(stopReceiver);
-
-//Stop the Service//
-
-            stopSelf();
-        }
-    };
-
-    private void loginToFirebase() {
-
-//Authenticate with Firebase, using the email and password we created earlier//
-
-        String email = getString(R.string.test_email);
-        String password = getString(R.string.test_password);
-
-//Call OnCompleteListener if the user is signed in successfully//
-
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        daoTracking = new DAOtracking(this);
+        mLocationCallback = new LocationCallback() {
             @Override
-            public void onComplete(Task<AuthResult> task) {
-
-//If the user has been authenticated...//
-
-                if (task.isSuccessful()) {
-
-//...then call requestLocationUpdates//
-
-                    requestLocationUpdates();
-                } else {
-
-//If sign in fails, then log the error//
-
-                    Log.d(TAG, "Firebase authentication failed");
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
                 }
-            }
-        });
-    }
+                for (Location location : locationResult.getLocations()) {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
 
-//Initiate the request to track the device's location//
+                    LocalDateTime now = LocalDateTime.now();
+                    Date date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+                    DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+                    String from = df.format(date);
+                    daoTracking.saveOrUpdate(null,from,1,latitude,longitude);
+                }
+            };
+        };
+        requestLocationUpdates();
+
+    }
 
     private void requestLocationUpdates() {
         LocationRequest request = new LocationRequest();
-
-//Specify how often your app should request the device’s location//
-
-        request.setInterval(10000);
-
-//Get the most accurate location data available//
-
+        request.setInterval(5000); // every 1 minutes
+        request.setFastestInterval(5000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
-        int permission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-
-//If the app currently has access to the location permission...//
-
+        int permission = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission == PackageManager.PERMISSION_GRANTED) {
-            client.getLastLocation().addOnSuccessListener(this);
+            client.requestLocationUpdates(request,mLocationCallback,null);
         }
 
-    }
-
-
-
-    @Override
-    public void onSuccess(Object o) {
-        final String path = getString(R.string.firebase_path);
-
-        Location location = (Location) o;
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
-
-        // Got last known location. In some rare situations this can be null.
-        if (location != null) {
-            // Logic to handle location object
-            ref.setValue(location);
-        }
     }
 }
