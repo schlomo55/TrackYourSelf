@@ -49,9 +49,12 @@ public class DAOtracking {
         Cursor cr = db.rawQuery(query, null);
         if (cr.moveToFirst()) {
             int totalTimeOverall = cr.getInt(cr.getColumnIndex("totalTimeOverall"));
+            if(totalTimeOverall==0){
+                return locationsResult;
+            }
             do {
                 String name = cr.getString(cr.getColumnIndex("name"));
-                float totalTime = cr.getInt(cr.getColumnIndex("totalTime"))/totalTimeOverall;
+                float totalTime = cr.getInt(cr.getColumnIndex("totalForLocation"))/totalTimeOverall;
                 locationsResult.put(name, totalTime);
             } while (cr.moveToNext());
         }
@@ -63,8 +66,8 @@ public class DAOtracking {
         if(recordMinutes != NOT_EXISTS ) {
             ContentValues cv = new ContentValues();
             cv.put("totalTime", recordMinutes + minutes);
-            db.update("locations", cv, "latitude=" + latitude + " and longitude = "
-                    + longitude + " and date='" + date + "'", null);
+            db.update("locations", cv, "abs(latitude-"+latitude+")<=0.007 and abs(latitude-"+latitude+")<=0.007"
+                    +" and date='" + date + "'", null);
             return;
         }else if(locationName != null){
             ContentValues cv = new ContentValues();
@@ -78,25 +81,26 @@ public class DAOtracking {
 
     }
     private int getRecordMinutes(double latitude , double longitude,String date){
-        String query = "select * from locations where latitude=" +latitude+" and longitude = "
-                + longitude +" and date='" +date+"'";
+        String query = "select totalTime from locations where abs(latitude-"+latitude+")<=0.007 and abs(latitude-"+latitude+")<=0.007"+
+                " and date='" +date+"'";
         Cursor cr = db.rawQuery(query,null);
         if(cr.moveToFirst()){
-            return cr.getInt(cr.getColumnIndex("totalTime"));
+            int totalTime = cr.getInt(cr.getColumnIndex("totalTime"));
+            return totalTime;
         }
         return NOT_EXISTS;
     }
     private String prepareSqlQuery(String fromDate,String toDate){
-        String query="select name,totalTime,sum(totalTime) as totalTimeOverall from locations ";
+        String query="select name,sum(totalTime) as totalForLocation,sum(totalTime) as totalTimeOverall from locations ";
         if(fromDate!=null){
-            query+="where date>= "+fromDate;
+            query+="where date>= '"+fromDate+"'";
         }
         if(toDate!=null){
             if(fromDate!=null){
-                query+=" and date<= "+toDate;
+                query+=" and date<= '"+toDate+"'";
             }
             else {
-                query+="where date<= "+ toDate;
+                query+="where date<= '"+ toDate+"'";
             }
         }
         query+=" group by name";

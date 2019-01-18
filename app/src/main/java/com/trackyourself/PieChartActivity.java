@@ -26,8 +26,9 @@ public class PieChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pie_chart);
         daotracking = new DAOtracking(this);
-        criteria = (LocationCriteria) getIntent().getParcelableExtra("criteria");
-
+        criteria = new LocationCriteria();
+        criteria.setFromDate(getIntent().getStringExtra("fromDate"));
+        criteria.setToDate(getIntent().getStringExtra("toDate"));
 
 
         pieChart = (PieChart) findViewById(R.id.piechart);
@@ -47,7 +48,7 @@ public class PieChartActivity extends AppCompatActivity {
                 xVals.add(name);
 
         }
-        PieDataSet dataSet = new PieDataSet(yvalues, "locations Summart");
+        PieDataSet dataSet = new PieDataSet(yvalues, "locations Summary");
         PieData data = new PieData(xVals, dataSet);
         data.setValueFormatter(new PercentFormatter());
         pieChart.setData(data);
