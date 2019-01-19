@@ -1,6 +1,9 @@
 package com.trackyourself;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +15,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -28,6 +32,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageButton addLocation,showSpecificLocation;;
     private TextView fromDate,toDate;
     private Spinner name;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
 
 
@@ -55,10 +61,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         addLocation = (ImageButton) findViewById(R.id.addNewLocation);
         fromDate = (TextView) findViewById(R.id.fromDate);
         toDate = (TextView) findViewById(R.id.toDate);
-        name = (Spinner) findViewById(R.id.name);
+        name = (Spinner) findViewById(R.id.names);
         List<String> locationsNames = daoTracking.getAllLocations();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,locationsNames);
         name.setAdapter(adapter);
+        fromDate.setOnClickListener(this);
+        toDate.setOnClickListener(this);
         showAllHistory.setOnClickListener(this);
         addLocation.setOnClickListener(this);
         showSpecificLocation.setOnClickListener(this);
@@ -115,8 +123,47 @@ public class MainActivity extends Activity implements View.OnClickListener {
            case R.id.showSpecificLocation:
                 startSpecificLocation();
                 break;
+           case R.id.fromDate:
+               getCalendar(true);
+               break;
+           case R.id.toDate:
+               getCalendar(false);
+               break;
        }
     }
+
+    private void getCalendar(final boolean from) {
+
+
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                MainActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                mDateSetListener,
+                year,month,day);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+
+
+                String date =  year+ "/" + month + "/" +day ;
+
+                if (from) {
+                    fromDate.setText(date);
+                } else
+                    toDate.setText(date);
+            }
+        };
+    }
+
 
     private void startPieChart(){
         criteria = createDefaultCriteria();
@@ -134,12 +181,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void startSpecificLocation(){
         Intent graphActivity = new Intent(this,GraphActivity.class);
-//        fromDate.getText().toString()
-//        toDate.getText().toString()
-//        name.getText().toString()
 
-        graphActivity.putExtra("fromDate","2019/01/18");
-        graphActivity.putExtra("toDate","2019/01/19");
+
+        graphActivity.putExtra("fromDate",fromDate.getText().toString());
+        graphActivity.putExtra("toDate",toDate.getText().toString());
         graphActivity.putExtra("name",name.getSelectedItem().toString());
         startActivity(graphActivity);
     }
