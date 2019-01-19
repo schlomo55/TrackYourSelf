@@ -84,7 +84,8 @@ public class GraphActivity extends AppCompatActivity {
             barEntries.add(new BarEntry(time.getValue(),y));
 
         }
-        /////////////////////////////////////////////
+
+         /////////////////////////////////////////////
 
 
         ///////////////////////just exemple //////////////////////
@@ -96,6 +97,7 @@ public class GraphActivity extends AppCompatActivity {
 /////////////////////////////////////////////////
         BarDataSet barDataSet = new BarDataSet(barEntries,"Dates");
         BarData barData = new BarData(dates,barDataSet);
+        barChart.getAxisLeft().setAxisMinValue(0);
         barChart.setData(barData);
 
 
