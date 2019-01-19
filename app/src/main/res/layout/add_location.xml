@@ -76,12 +76,14 @@
         android:id="@+id/remainTime"
         android:layout_width="107dp"
         android:layout_height="48dp"
+        android:layout_marginStart="152dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="152dp"
         android:ems="10"
         android:hint="In Minutes"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <Button
