@@ -87,6 +87,7 @@ public class GraphActivity extends AppCompatActivity {
 
         BarDataSet barDataSet = new BarDataSet(barEntries,"Dates");
         BarData barData = new BarData(dates,barDataSet);
+        barChart.getAxisRight().setAxisMinValue(0);
         barChart.setData(barData);
 
 

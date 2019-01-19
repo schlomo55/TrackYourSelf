@@ -63,8 +63,8 @@ public class Time_Up {
         //3. Build Notification with NotificationCompat.Builder
         //   on Build.VERSION < Oreo the notification avoid the CHANEL_ID
         Notification notification = new NotificationCompat.Builder(context, CHANNEL1_ID)
-                .setSmallIcon(android.R.drawable.ic_menu_view)   //Set the icon
-                .setContentTitle(notificationTitle) .setSound(null)//Set the title of Notification
+                .setSmallIcon(android.R.drawable.ic_dialog_map)   //Set the icon
+                .setContentTitle(notificationTitle)//Set the title of Notification
                .setContentText(notificationText)    //Set the text for notification
                 //.setContentIntent(pendeing intent)
                 .build();
