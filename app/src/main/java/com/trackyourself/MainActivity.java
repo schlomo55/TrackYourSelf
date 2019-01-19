@@ -56,7 +56,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         daoTracking = new DAOtracking(this);
-        daoTracking.addData();
         initializeVariables();
         setOnclickListner();
 
@@ -195,13 +194,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void startSpecificLocation(){
         Intent graphActivity = new Intent(this,GraphActivity.class);
-        String locationName = name.getSelectedItem().toString();
+
         String from = fromDate.getText().toString();
         String to = toDate.getText().toString();
-        if(locationName==null || locationName.equals("") || from.equals("")){
+        if(name.getSelectedItem()==null || name.getSelectedItem().toString().equals("") || from.equals("")){
             Toast.makeText(this, "Please enter valid data", Toast.LENGTH_LONG).show();
             return;
         }
+        String locationName = name.getSelectedItem().toString();
         if(to.equals("")){
             LocalDateTime now = LocalDateTime.now();
             Date toDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());

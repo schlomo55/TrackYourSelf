@@ -25,7 +25,7 @@
 
     <EditText
         android:id="@+id/locationName"
-        android:layout_width="164dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_weight="1"
