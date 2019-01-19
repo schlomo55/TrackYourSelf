@@ -81,13 +81,16 @@ public class GraphActivity extends AppCompatActivity {
                     break;
                 else
                     y++;
-            barEntries.add(new BarEntry(time.getValue(),y));
+            float t= (float) (time.getValue());
+
+            barEntries.add(new BarEntry(t/60+(t%60)/60,y));
 
         }
 
-        BarDataSet barDataSet = new BarDataSet(barEntries,"Dates");
+        BarDataSet barDataSet = new BarDataSet(barEntries,"per/hour    "+ locationCriteria.getLocationName());
         BarData barData = new BarData(dates,barDataSet);
         barChart.getAxisRight().setAxisMinValue(0);
+        barChart.getAxisLeft().setAxisMinValue(0);
         barChart.setData(barData);
 
 
