@@ -78,10 +78,10 @@ public class GraphActivity extends AppCompatActivity {
 
         ////////////////////////////////to finish//////////////////////////
         int y =0;
-        for (Map.Entry<String, Integer> book : hashMap.entrySet()) {
+        for (Map.Entry<String, Integer> time : hashMap.entrySet()) {
 
 
-            barEntries.add(new BarEntry(book.getValue(),y));
+            barEntries.add(new BarEntry(time.getValue(),y));
 
             y++;
         }
@@ -89,11 +89,11 @@ public class GraphActivity extends AppCompatActivity {
 
 
         ///////////////////////just exemple //////////////////////
-        for(int j = 0; j< dates.size();j++){
-
-            barEntries.add(new BarEntry(value,j));
-
-        }
+//        for(int j = 0; j< dates.size();j++){
+//
+//            barEntries.add(new BarEntry(value,j));
+//
+//        }
 /////////////////////////////////////////////////
         BarDataSet barDataSet = new BarDataSet(barEntries,"Dates");
         BarData barData = new BarData( dates,barDataSet);
