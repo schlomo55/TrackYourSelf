@@ -56,6 +56,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         daoTracking = new DAOtracking(this);
+        daoTracking.addData();
         showAllHistory = (ImageView) findViewById(R.id.showAllHistory);
         showSpecificLocation = (ImageButton) findViewById(R.id.showSpecificLocation);
         addLocation = (ImageButton) findViewById(R.id.addNewLocation);

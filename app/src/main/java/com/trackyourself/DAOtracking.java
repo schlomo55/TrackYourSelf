@@ -35,7 +35,95 @@ public class DAOtracking {
     }
 
 
-
+    public void addData(){
+        ContentValues cv = new ContentValues();
+        //work
+        cv.put("name","עבודה");
+        cv.put("latitude",34.86056327);
+        cv.put("longitude",32.14771106);
+        cv.put("date","2019/01/14");
+        cv.put("totalTime",502);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","עבודה");
+        cv.put("latitude",34.86056327);
+        cv.put("longitude",32.14771106);
+        cv.put("date","2019/01/15");
+        cv.put("totalTime",567);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","עבודה");
+        cv.put("latitude",34.86056327);
+        cv.put("longitude",32.14771106);
+        cv.put("date","2019/01/16");
+        cv.put("totalTime",452);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","עבודה");
+        cv.put("latitude",34.86056327);
+        cv.put("longitude",32.14771106);
+        cv.put("date","2019/01/17");
+        cv.put("totalTime",495);
+        db.insert("locations",null,cv);
+        //pisga
+        cv = new ContentValues();
+        cv.put("name","פסגה");
+        cv.put("latitude",31.8164276);
+        cv.put("longitude",35.252466);
+        cv.put("date","2019/01/16");
+        cv.put("totalTime",90);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","פסגה");
+        cv.put("latitude",31.8164276);
+        cv.put("longitude",35.252466);
+        cv.put("date","2019/01/19");
+        cv.put("totalTime",126);
+        db.insert("locations",null,cv);
+        //home
+        cv = new ContentValues();
+        cv.put("name","הרצוג");
+        cv.put("latitude",31.7638617);
+        cv.put("longitude",35.2034345);
+        cv.put("date","2019/01/14");
+        cv.put("totalTime",185);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","הרצוג");
+        cv.put("latitude",31.7638617);
+        cv.put("longitude",35.2034345);
+        cv.put("date","2019/01/15");
+        cv.put("totalTime",680);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","הרצוג");
+        cv.put("latitude",31.7638617);
+        cv.put("longitude",35.2034345);
+        cv.put("date","2019/01/16");
+        cv.put("totalTime",971);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","הרצוג");
+        cv.put("latitude",31.7638617);
+        cv.put("longitude",35.2034345);
+        cv.put("date","2019/01/17");
+        cv.put("totalTime",611);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","הרצוג");
+        cv.put("latitude",31.7638617);
+        cv.put("longitude",35.2034345);
+        cv.put("date","2019/01/18");
+        cv.put("totalTime",1283);
+        db.insert("locations",null,cv);
+        cv = new ContentValues();
+        cv.put("name","הרצוג");
+        cv.put("latitude",31.7638617);
+        cv.put("longitude",35.2034345);
+        cv.put("date","2019/01/19");
+        cv.put("totalTime",1294);
+        db.insert("locations",null,cv);
+    }
 
     public HashMap<String, Integer> getLocationHistory(LocationCriteria criteria) {
         HashMap<String, Integer> locationResult = new HashMap<>();
