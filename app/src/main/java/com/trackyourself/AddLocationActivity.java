@@ -70,11 +70,18 @@ public class AddLocationActivity extends Activity implements View.OnClickListene
                 getCurrentLocation(this);
                 break;
             case R.id.addRemain:
+                String name = names.getSelectedItem().toString();
+                if(name.equals("") || remainTime.getText().toString().equals("")){
+                    Toast.makeText(this, "Please add valid data", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                
                 int time = Integer.parseInt(remainTime.getText().toString());
                 LocalDateTime now = LocalDateTime.now();
                 Date from = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
                 DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-                String name = names.getSelectedItem().toString();
+
+
                 if(daoTracking.setRemain(time,df.format(from),name)==UPDATE_SUCCESSFULLY){
                     remainTime.setText("");
                     Toast.makeText(this, "Add successfully", Toast.LENGTH_SHORT).show();
