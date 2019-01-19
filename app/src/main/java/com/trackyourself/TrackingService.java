@@ -41,6 +41,7 @@ public class TrackingService extends Service {
 
     private static final String TAG = TrackingService.class.getSimpleName();
 
+    private Time_Up time_up;
     private DAOtracking daoTracking;
     private LocationCallback mLocationCallback;
     private MyLocation myLocation;
@@ -53,6 +54,7 @@ public class TrackingService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        time_up =new Time_Up(this);
         daoTracking = new DAOtracking(this);
         myLocation = new MyLocation();
         mLocationCallback = new LocationCallback() {
@@ -70,7 +72,10 @@ public class TrackingService extends Service {
                     DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
                     String from = df.format(date);
 
-                    daoTracking.saveOrUpdate(from,1,myLocation);
+                    if(daoTracking.saveOrUpdate(from,1,myLocation).equals(SaveResult.TIMES_UP)){
+
+                    }
+                    time_up.showNotification();
                 }
             };
         };
