@@ -20,10 +20,7 @@ import java.util.Random;
 public class GraphActivity extends AppCompatActivity {
 
     private BarChart barChart;
-    private ArrayList<String> dates;
-    private ArrayList<BarEntry> barEntries;
     private  DAOtracking daOtracking;
-    private  LocationCriteria locationCriteria;
 
 
     @Override
@@ -39,7 +36,7 @@ public class GraphActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("name");
         String fromDate = getIntent().getStringExtra("fromDate");
         String toDate = getIntent().getStringExtra("toDate");
-        locationCriteria = new LocationCriteria();
+        LocationCriteria locationCriteria = new LocationCriteria();
         locationCriteria.setFromDate(fromDate);
         locationCriteria.setToDate(toDate);
         locationCriteria.setLocationName(name);
@@ -69,19 +66,21 @@ public class GraphActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        dates = new ArrayList<>();
+        ArrayList<String> dates = new ArrayList<>();
         dates = getList(mDate1,mDate2);
         HashMap<String,Integer> hashMap = daOtracking.getLocationHistory(locationCriteria);
-        barEntries = new ArrayList<>();
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-        float value =0f;
 
         ////////////////////////////////to finish//////////////////////////
-        int y =0;
+
         for (Map.Entry<String, Integer> time : hashMap.entrySet()) {
+            int y =0;
+            for(String list : dates)
+                if (list.equals(time.getKey()))
+                    break;
 
-
-            barEntries.add(new BarEntry(time.getValue(),y));
+                barEntries.add(new BarEntry(time.getValue(),y));
 
             y++;
         }
@@ -96,7 +95,7 @@ public class GraphActivity extends AppCompatActivity {
 //        }
 /////////////////////////////////////////////////
         BarDataSet barDataSet = new BarDataSet(barEntries,"Dates");
-        BarData barData = new BarData( dates,barDataSet);
+        BarData barData = new BarData(dates,barDataSet);
         barChart.setData(barData);
 
 
