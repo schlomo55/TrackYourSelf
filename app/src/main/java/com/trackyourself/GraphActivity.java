@@ -72,7 +72,7 @@ public class GraphActivity extends AppCompatActivity {
         ArrayList<BarEntry> barEntries = new ArrayList<>();
 
 
-        ////////////////////////////////to finish//////////////////////////
+
 
         for (Map.Entry<String, Integer> time : hashMap.entrySet()) {
             int y =0;
@@ -85,19 +85,9 @@ public class GraphActivity extends AppCompatActivity {
 
         }
 
-         /////////////////////////////////////////////
-
-
-        ///////////////////////just exemple //////////////////////
-//        for(int j = 0; j< dates.size();j++){
-//
-//            barEntries.add(new BarEntry(value,j));
-//
-//        }
-/////////////////////////////////////////////////
         BarDataSet barDataSet = new BarDataSet(barEntries,"Dates");
         BarData barData = new BarData(dates,barDataSet);
-        barChart.getAxisLeft().setAxisMinValue(0);
+        barChart.getAxisRight().setAxisMinValue(0);
         barChart.setData(barData);
 
 
