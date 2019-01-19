@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageButton addLocation,showSpecificLocation;;
     private TextView fromDate,toDate;
     private Spinner name;
-    private DatePickerDialog.OnDateSetListener mDateSetListener;
+
 
 
 
@@ -121,27 +121,46 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-       switch (v.getId()){
-           case R.id.showAllHistory:
-               startPieChart();
-               break;
-           case R.id.addNewLocation:
-               startAddLocation();
-               break;
-           case R.id.showSpecificLocation:
+        switch (v.getId()){
+            case R.id.showAllHistory:
+                startPieChart();
+                break;
+            case R.id.addNewLocation:
+                startAddLocation();
+                break;
+            case R.id.showSpecificLocation:
                 startSpecificLocation();
                 break;
-           case R.id.fromDate:
-               getCalendar(true);
-               break;
-           case R.id.toDate:
-               getCalendar(false);
-               break;
-       }
+            case R.id.fromDate:
+                getCalendar(true);
+                break;
+            case R.id.toDate:
+                getCalendar(false);
+                break;
+        }
     }
 
     private void getCalendar(final boolean from) {
+        DatePickerDialog.OnDateSetListener mDateSetListener = null;
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                String date;
+                String zero ="0";
+                if((month)<10&&day<10)
+                    date =  year+ "/" +zero+month + "/" +zero+day ;
+                else if (day<10)
+                    date =  year+ "/" + month + "/" +zero+day ;
+                else
+                    date =  year+ "/" +zero+ month + "/" +day ;
 
+                if (from) {
+                    fromDate.setText(date);
+                } else
+                    toDate.setText(date);
+            }
+        };
 
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -156,20 +175,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
 
-
-                String date =  year+ "/" + month + "/" +day ;
-
-                if (from) {
-                    fromDate.setText(date);
-                } else
-                    toDate.setText(date);
-            }
-        };
     }
 
 
