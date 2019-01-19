@@ -36,13 +36,13 @@ public class GraphActivity extends AppCompatActivity {
 
 
 
-        String place = getIntent().getStringExtra("location");
-        String from = getIntent().getStringExtra("from");
-        String to = getIntent().getStringExtra("to");
+        String name = getIntent().getStringExtra("name");
+        String fromDate = getIntent().getStringExtra("fromDate");
+        String toDate = getIntent().getStringExtra("toDate");
         locationCriteria = new LocationCriteria();
-        locationCriteria.setFromDate(from);
-        locationCriteria.setToDate(to);
-        locationCriteria.setLocationName(place);
+        locationCriteria.setFromDate(fromDate);
+        locationCriteria.setToDate(toDate);
+        locationCriteria.setLocationName(name);
 
 
 

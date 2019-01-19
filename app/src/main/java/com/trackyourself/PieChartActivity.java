@@ -9,6 +9,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class PieChartActivity extends AppCompatActivity {
         pieChart = (PieChart) findViewById(R.id.piechart);
         pieChart.setUsePercentValues(true);
 
+
         ArrayList<Entry> yvalues = new ArrayList<Entry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
@@ -49,7 +51,11 @@ public class PieChartActivity extends AppCompatActivity {
 
         }
         PieDataSet dataSet = new PieDataSet(yvalues, "locations Summary");
+        pieChart.setDescription("This is your locations summary");
+        dataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
+
         PieData data = new PieData(xVals, dataSet);
+        data.setValueTextSize(13f);
         data.setValueFormatter(new PercentFormatter());
         pieChart.setData(data);
     }

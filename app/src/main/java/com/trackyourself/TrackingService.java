@@ -43,6 +43,7 @@ public class TrackingService extends Service {
 
     private DAOtracking daoTracking;
     private LocationCallback mLocationCallback;
+    private MyLocation myLocation;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -53,6 +54,7 @@ public class TrackingService extends Service {
     public void onCreate() {
         super.onCreate();
         daoTracking = new DAOtracking(this);
+        myLocation = new MyLocation();
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -60,25 +62,25 @@ public class TrackingService extends Service {
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
+                    myLocation.setLongitude(location.getLongitude());
+                    myLocation.setLatitude(location.getLatitude());
 
                     LocalDateTime now = LocalDateTime.now();
                     Date date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
                     DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
                     String from = df.format(date);
-                    daoTracking.saveOrUpdate(null,from,1,latitude,longitude);
+
+                    daoTracking.saveOrUpdate(from,1,myLocation);
                 }
             };
         };
         requestLocationUpdates();
-
     }
 
     private void requestLocationUpdates() {
         LocationRequest request = new LocationRequest();
-        request.setInterval(5000); // every 1 minutes
-        request.setFastestInterval(5000);
+        request.setInterval(60000); // every 1 minutes
+        request.setFastestInterval(30000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
         int permission = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
