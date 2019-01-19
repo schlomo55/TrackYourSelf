@@ -57,28 +57,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         daoTracking = new DAOtracking(this);
         daoTracking.addData();
-        showAllHistory = (ImageView) findViewById(R.id.showAllHistory);
-        showSpecificLocation = (ImageButton) findViewById(R.id.showSpecificLocation);
-        addLocation = (ImageButton) findViewById(R.id.addNewLocation);
-        fromDate = (TextView) findViewById(R.id.fromDate);
-        toDate = (TextView) findViewById(R.id.toDate);
-        name = (Spinner) findViewById(R.id.names);
-        List<String> locationsNames = daoTracking.getAllLocations();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,locationsNames);
-        name.setAdapter(adapter);
-        fromDate.setOnClickListener(this);
-        toDate.setOnClickListener(this);
-        showAllHistory.setOnClickListener(this);
-        addLocation.setOnClickListener(this);
-        showSpecificLocation.setOnClickListener(this);
+        initializeVariables();
+        setOnclickListner();
+
         //Check permission//
         int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission == PackageManager.PERMISSION_GRANTED) {
             startTrackerService();
         } else {
-         ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST);
+         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSIONS_REQUEST);
         }
     }
 
@@ -90,6 +77,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else {
             Toast.makeText(this, "Please enable location services to allow GPS tracking", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void initializeVariables(){
+        showAllHistory = (ImageView) findViewById(R.id.showAllHistory);
+        showSpecificLocation = (ImageButton) findViewById(R.id.showSpecificLocation);
+        addLocation = (ImageButton) findViewById(R.id.addNewLocation);
+        fromDate = (TextView) findViewById(R.id.fromDate);
+        toDate = (TextView) findViewById(R.id.toDate);
+        name = (Spinner) findViewById(R.id.names);
+        List<String> locationsNames = daoTracking.getAllLocations();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,locationsNames);
+        name.setAdapter(adapter);
+    }
+
+    private void setOnclickListner(){
+        fromDate.setOnClickListener(this);
+        toDate.setOnClickListener(this);
+        showAllHistory.setOnClickListener(this);
+        addLocation.setOnClickListener(this);
+        showSpecificLocation.setOnClickListener(this);
     }
 
     //Start the TrackerService//
@@ -182,11 +189,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void startSpecificLocation(){
         Intent graphActivity = new Intent(this,GraphActivity.class);
-
-
-        graphActivity.putExtra("fromDate",fromDate.getText().toString());
-        graphActivity.putExtra("toDate",toDate.getText().toString());
-        graphActivity.putExtra("name",name.getSelectedItem().toString());
+        String locationName = name.getSelectedItem().toString();
+        String from = fromDate.getText().toString();
+        String to = toDate.getText().toString();
+        if(locationName==null || locationName.equals("") || from.equals("")){
+            Toast.makeText(this, "Please enter valid data", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(to.equals("")){
+            LocalDateTime now = LocalDateTime.now();
+            Date toDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+            to=df.format(toDate);
+        }
+        graphActivity.putExtra("fromDate",from);
+        graphActivity.putExtra("toDate",to);
+        graphActivity.putExtra("name",locationName);
         startActivity(graphActivity);
     }
 }

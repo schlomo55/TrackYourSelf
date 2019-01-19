@@ -76,6 +76,7 @@ public class AddLocationActivity extends Activity implements View.OnClickListene
                 DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
                 String name = names.getSelectedItem().toString();
                 if(daoTracking.setRemain(time,df.format(from),name)==UPDATE_SUCCESSFULLY){
+                    remainTime.setText("");
                     Toast.makeText(this, "Add successfully", Toast.LENGTH_SHORT).show();
                 }
         }
