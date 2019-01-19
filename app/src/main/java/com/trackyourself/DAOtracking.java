@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.database.Cursor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.trackyourself.SaveResult.*;
 
@@ -15,13 +17,13 @@ public class DAOtracking {
 
     private Context context;
     private SQLiteDatabase db = null;
-    private static int NOT_EXISTS = -1;
+    private static int NOT_EXISTS_FOR_DATE = -1;
     public DAOtracking(Context context){
         this.context = context;
         try
         {
             db = context.openOrCreateDatabase("MyContacts",Context.MODE_PRIVATE, null);
-            String sql = "CREATE TABLE IF NOT EXISTS locations (id integer primary key, name VARCHAR, latitude FLOAT,longitude FLOAT,date DATE,totalTime INT);";
+            String sql = "CREATE TABLE IF NOT EXISTS locations (id integer primary key, name VARCHAR, latitude FLOAT,longitude FLOAT,date DATE,totalTime INT,remainTime INT);";
             db.execSQL(sql);
         }
         catch(Exception e){
@@ -48,14 +50,14 @@ public class DAOtracking {
         String query = prepareSqlQuery(criteria.getFromDate(), criteria.getToDate());
         Cursor cr = db.rawQuery(query, null);
         if (cr.moveToFirst()) {
-            int totalTimeOverall = cr.getInt(cr.getColumnIndex("totalTimeOverall"));
+            int totalTimeOverall = getTotalTime();
             if(totalTimeOverall==0){
                 return locationsResult;
             }
             do {
                 String name = cr.getString(cr.getColumnIndex("name"));
-                float totalTime = cr.getInt(cr.getColumnIndex("totalForLocation"))/totalTimeOverall;
-                locationsResult.put(name, totalTime);
+                float totalTime = cr.getInt(1);
+                locationsResult.put(name, totalTime/totalTimeOverall);
             } while (cr.moveToNext());
         }
         return locationsResult;
@@ -68,9 +70,12 @@ public class DAOtracking {
         switch (locationExists(latitude,longitude)){
             case LOCATION_EXISTS:
                 int recordMinutes = getRecordMinutes(latitude,longitude,date);
-                if(recordMinutes != NOT_EXISTS ) {// mybe need to change the name??
-                    if(locationName == null)
-                        return updateRecord(recordMinutes,minutes,latitude,longitude,date);
+                if(recordMinutes != NOT_EXISTS_FOR_DATE ) {//location exists for the specific date
+                    if (locationName == null)
+                        return updateRecord(recordMinutes, minutes, latitude, longitude, date);
+                }else{
+                    String name  = getLocationName(latitude,longitude);
+                    saveNewLocationReord(name,latitude,longitude,date);
                 }
                 break;
             case LOCATION_NOT_EXISTS:
@@ -80,12 +85,34 @@ public class DAOtracking {
         return  LOCATION_EXISTS;
     }
 
+    public List<String> getAllLocations(){
+        List<String> locationsNames = new ArrayList<>();
+        String query = "select name from locations group by name";
+        Cursor cr = db.rawQuery(query,null);
+        if (cr.moveToFirst()) {
+            do {
+                String name = cr.getString(0);
+                locationsNames.add(name);
+            } while (cr.moveToNext());
+        }
+        return locationsNames;
+    }
+
     private SaveResult updateRecord(int recordMinutes,int minutes,double latitude,double longitude,String date){
         ContentValues cv = new ContentValues();
         cv.put("totalTime", recordMinutes + minutes);
         db.update("locations", cv, "abs(latitude-"+latitude+")<=0.007 and abs(longitude-"+longitude+")<=0.007"
                 +" and date='" + date + "'", null);
         return UPDATE_SUCCESSFULLY;
+    }
+    private int getTotalTime(){
+        String query = "select sum(totalTime) as totalTimeOverAll from locations";
+        Cursor cr = db.rawQuery(query,null);
+        int totalTime = 0;
+        if (cr.moveToFirst()) {
+            totalTime  = cr.getInt(0);
+        }
+        return totalTime;
     }
     private SaveResult saveNewLocationReord(String locationName,double latitude,double longitude,String date){
         ContentValues cv = new ContentValues();
@@ -99,6 +126,17 @@ public class DAOtracking {
         }
         return SAVE_PROBLEM;
     }
+
+
+
+    private String getLocationName(double latitude,double longitude){
+        String query = "select name from locations where abs(latitude-"+latitude+")<=0.007 and " +
+                "abs(longitude-"+longitude+")<=0.007";
+        Cursor cr = db.rawQuery(query,null);
+        cr.moveToFirst();
+        return cr.getString(cr.getColumnIndex("name"));
+    }
+
     private  SaveResult locationExists(double latitude,double longitude){
         String query = "select totalTime from locations where abs(latitude-"+latitude+")<=0.007 and " +
                 "abs(longitude-"+longitude+")<=0.007";
@@ -116,10 +154,10 @@ public class DAOtracking {
             int totalTime = cr.getInt(cr.getColumnIndex("totalTime"));
             return totalTime;
         }
-        return NOT_EXISTS;
+        return NOT_EXISTS_FOR_DATE;
     }
     private String prepareSqlQuery(String fromDate,String toDate){
-        String query="select name,sum(totalTime) as totalForLocation,sum(totalTime) as totalTimeOverall from locations ";
+        String query="select name,sum(totalTime) as totalForLocation from locations ";
         if(fromDate!=null){
             query+="where date>= '"+fromDate+"'";
         }

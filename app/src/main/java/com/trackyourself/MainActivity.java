@@ -11,8 +11,10 @@ import android.location.LocationManager;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,15 +29,18 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final int PERMISSIONS_REQUEST = 100;
-    DAOtracking daoTracking;
-    LocationCriteria criteria;
-    ImageView showAllHistory;
-    ImageButton addLocation,showSpecificLocation;;
-    TextView fromDate,toDate,name;
+    private DAOtracking daoTracking;
+    private LocationCriteria criteria;
+    private ImageView showAllHistory;
+    private ImageButton addLocation,showSpecificLocation;;
+    private TextView fromDate,toDate;
+    private Spinner name;
+
 
 
 
@@ -50,7 +55,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         addLocation = (ImageButton) findViewById(R.id.addNewLocation);
         fromDate = (TextView) findViewById(R.id.fromDate);
         toDate = (TextView) findViewById(R.id.toDate);
-        name = (TextView) findViewById(R.id.name);
+        name = (Spinner) findViewById(R.id.name);
+        List<String> locationsNames = daoTracking.getAllLocations();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,locationsNames);
+        name.setAdapter(adapter);
         showAllHistory.setOnClickListener(this);
         addLocation.setOnClickListener(this);
         showSpecificLocation.setOnClickListener(this);
@@ -129,9 +137,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //        fromDate.getText().toString()
 //        toDate.getText().toString()
 //        name.getText().toString()
+
         graphActivity.putExtra("fromDate","2019/01/18");
         graphActivity.putExtra("toDate","2019/01/19");
-        graphActivity.putExtra("name","הרצוג");
+        graphActivity.putExtra("name",name.getSelectedItem().toString());
         startActivity(graphActivity);
     }
 }

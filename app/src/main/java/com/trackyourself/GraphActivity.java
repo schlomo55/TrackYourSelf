@@ -79,10 +79,10 @@ public class GraphActivity extends AppCompatActivity {
             for(String list : dates)
                 if (list.equals(time.getKey()))
                     break;
+                else
+                    y++;
+            barEntries.add(new BarEntry(time.getValue(),y));
 
-                barEntries.add(new BarEntry(time.getValue(),y));
-
-            y++;
         }
         /////////////////////////////////////////////
 

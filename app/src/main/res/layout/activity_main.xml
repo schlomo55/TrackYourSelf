@@ -102,12 +102,10 @@
                 android:layout_height="wrap_content"
                 android:text="Name" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </TableRow>
         <TableRow>

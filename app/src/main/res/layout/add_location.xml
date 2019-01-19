@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Enter Location Name" />
+        android:hint="Enter Location Name"
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/saveLocation"
