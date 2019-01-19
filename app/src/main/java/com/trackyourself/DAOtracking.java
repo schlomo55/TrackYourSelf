@@ -18,12 +18,15 @@ public class DAOtracking {
     private Context context;
     private SQLiteDatabase db = null;
     private static int NOT_EXISTS_FOR_DATE = -1;
+    private static int RECORD_MINUTES = 0;
+    private static int TIME_REMAIN = 1;
     public DAOtracking(Context context){
         this.context = context;
         try
         {
             db = context.openOrCreateDatabase("MyContacts",Context.MODE_PRIVATE, null);
-            String sql = "CREATE TABLE IF NOT EXISTS locations (id integer primary key, name VARCHAR, latitude FLOAT,longitude FLOAT,date DATE,totalTime INT,remainTime INT);";
+            String sql = "CREATE TABLE IF NOT EXISTS locations (id integer primary key, name VARCHAR, " +
+                    "latitude FLOAT,longitude FLOAT,date DATE,totalTime INT,remainTime INT DEFAULT -1);";
             db.execSQL(sql);
         }
         catch(Exception e){
@@ -69,10 +72,10 @@ public class DAOtracking {
         String locationName = location.getName();
         switch (locationExists(latitude,longitude)){
             case LOCATION_EXISTS:
-                int recordMinutes = getRecordMinutes(latitude,longitude,date);
-                if(recordMinutes != NOT_EXISTS_FOR_DATE ) {//location exists for the specific date
+                int[] recordInfo = getRecordInfo(latitude,longitude,date);
+                if(recordInfo[RECORD_MINUTES] != NOT_EXISTS_FOR_DATE ) {//location exists for the specific date
                     if (locationName == null)
-                        return updateRecord(recordMinutes, minutes, latitude, longitude, date);
+                        return updateRecord(recordInfo[RECORD_MINUTES], minutes, latitude, longitude, date,recordInfo[TIME_REMAIN]);
                 }else{
                     String name  = getLocationName(latitude,longitude);
                     saveNewLocationReord(name,latitude,longitude,date);
@@ -98,11 +101,15 @@ public class DAOtracking {
         return locationsNames;
     }
 
-    private SaveResult updateRecord(int recordMinutes,int minutes,double latitude,double longitude,String date){
+    private SaveResult updateRecord(int recordMinutes,int minutes,double latitude,double longitude,String date,int remainTime){
         ContentValues cv = new ContentValues();
         cv.put("totalTime", recordMinutes + minutes);
+        if(remainTime!=-1)
+            cv.put("remainTime",--remainTime);
         db.update("locations", cv, "abs(latitude-"+latitude+")<=0.007 and abs(longitude-"+longitude+")<=0.007"
                 +" and date='" + date + "'", null);
+        if(remainTime==0)
+            return TIMES_UP;
         return UPDATE_SUCCESSFULLY;
     }
     private int getTotalTime(){
@@ -146,15 +153,16 @@ public class DAOtracking {
         }
         return LOCATION_NOT_EXISTS;
     }
-    private int getRecordMinutes(double latitude , double longitude,String date){
-        String query = "select totalTime from locations where abs(latitude-"+latitude+")<=0.007 and abs(longitude-"+longitude+")<=0.007"+
+    private int[] getRecordInfo(double latitude , double longitude,String date){
+        String query = "select totalTime,remainTime from locations where abs(latitude-"+latitude+")<=0.007 and abs(longitude-"+longitude+")<=0.007"+
                 " and date='" +date+"'";
         Cursor cr = db.rawQuery(query,null);
         if(cr.moveToFirst()){
             int totalTime = cr.getInt(cr.getColumnIndex("totalTime"));
-            return totalTime;
+            int remainTime = cr.getInt(cr.getColumnIndex("remainTime"));
+            return new int[]{totalTime,remainTime};
         }
-        return NOT_EXISTS_FOR_DATE;
+        return new int[]{NOT_EXISTS_FOR_DATE,-1};
     }
     private String prepareSqlQuery(String fromDate,String toDate){
         String query="select name,sum(totalTime) as totalForLocation from locations ";
