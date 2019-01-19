@@ -34,6 +34,9 @@ public class DAOtracking {
         }
     }
 
+
+
+
     public HashMap<String, Integer> getLocationHistory(LocationCriteria criteria) {
         HashMap<String, Integer> locationResult = new HashMap<>();
         String query = prepareSqlQuery(criteria.getLocationName(), criteria.getFromDate(), criteria.getToDate());
@@ -101,6 +104,12 @@ public class DAOtracking {
         return locationsNames;
     }
 
+    public SaveResult setRemain(int remainTime, String date,String locationName){
+        ContentValues cv = new ContentValues();
+        cv.put("remainTime", remainTime);
+        db.update("locations",cv,"name='"+locationName+"' and date='"+date+"'",null);
+        return UPDATE_SUCCESSFULLY;
+    }
     private SaveResult updateRecord(int recordMinutes,int minutes,double latitude,double longitude,String date,int remainTime){
         ContentValues cv = new ContentValues();
         cv.put("totalTime", recordMinutes + minutes);
@@ -133,7 +142,6 @@ public class DAOtracking {
         }
         return SAVE_PROBLEM;
     }
-
 
 
     private String getLocationName(double latitude,double longitude){

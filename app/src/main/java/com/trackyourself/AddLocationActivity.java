@@ -8,7 +8,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+
 import static com.trackyourself.SaveResult.*;
 
 
@@ -32,6 +36,10 @@ public class AddLocationActivity extends Activity implements View.OnClickListene
     private TextView name;
     private DAOtracking daoTracking;
     private  MyLocation myLocation;
+    private Spinner names;
+    private  Button addRemain;
+    private  TextView remainTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +49,37 @@ public class AddLocationActivity extends Activity implements View.OnClickListene
         myLocation = new MyLocation();
         save = (Button) findViewById(R.id.saveLocation);
         name = (TextView) findViewById(R.id.locationName);
+        names = (Spinner) findViewById(R.id.names);
+        addRemain = (Button) findViewById(R.id.addRemain);
+        remainTime = (TextView) findViewById(R.id.remainTime);
+        List<String> locationsNames = daoTracking.getAllLocations();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,locationsNames);
+        names.setAdapter(adapter);
         save.setOnClickListener(this);
+        addRemain.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if(name.getText().toString().equals("")){
-            Toast.makeText(this, "Please Enter Location Name", Toast.LENGTH_SHORT).show();
-            return;
+        switch (v.getId()){
+            case R.id.saveLocation:
+                if(name.getText().toString().equals("")){
+                    Toast.makeText(this, "Please Enter Location Name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                getCurrentLocation(this);
+                break;
+            case R.id.addRemain:
+                int time = Integer.parseInt(remainTime.getText().toString());
+                LocalDateTime now = LocalDateTime.now();
+                Date from = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+                String name = names.getSelectedItem().toString();
+                if(daoTracking.setRemain(time,df.format(from),name)==UPDATE_SUCCESSFULLY){
+                    Toast.makeText(this, "Add successfully", Toast.LENGTH_SHORT).show();
+                }
         }
-        getCurrentLocation(this);
+
 
     }
 

@@ -1,29 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Location Name" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <EditText
-        android:id="@+id/locationName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Enter Location Name"
-        android:inputType="textPersonName" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:text="Location Name"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/saveLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Save" />
+        <EditText
+            android:id="@+id/locationName"
+            android:layout_width="164dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Enter Location Name"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+        <Button
+            android:id="@+id/saveLocation"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save"
+            app:layout_constraintStart_toEndOf="@+id/locationName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Add Alert"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locationName" />
+
+        <Spinner
+            android:id="@+id/names"
+            android:layout_width="162dp"
+            android:layout_height="49dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="33dp"
+            app:layout_constraintBottom_toTopOf="@+id/addRemain"
+            app:layout_constraintEnd_toStartOf="@+id/remainTime"
+            app:layout_constraintStart_toEndOf="@+id/textView7"
+            app:layout_constraintTop_toBottomOf="@+id/locationName" />
+
+        <EditText
+            android:id="@+id/remainTime"
+            android:layout_width="107dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="101dp"
+            android:ems="10"
+            android:hint="In Minutes"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/names"
+            app:layout_constraintTop_toBottomOf="@+id/locationName" />
+
+        <Button
+            android:id="@+id/addRemain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="147dp"
+            android:layout_marginTop="33dp"
+            android:layout_marginEnd="149dp"
+            android:layout_marginBottom="381dp"
+            android:text="ADD"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/names" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
+
+
+

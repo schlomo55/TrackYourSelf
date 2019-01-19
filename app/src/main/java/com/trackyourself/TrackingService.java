@@ -73,9 +73,8 @@ public class TrackingService extends Service {
                     String from = df.format(date);
 
                     if(daoTracking.saveOrUpdate(from,1,myLocation).equals(SaveResult.TIMES_UP)){
-
+                        time_up.showNotification();
                     }
-                    time_up.showNotification();
                 }
             };
         };

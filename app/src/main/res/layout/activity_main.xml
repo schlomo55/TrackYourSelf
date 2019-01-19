@@ -103,7 +103,7 @@
                 android:text="Name" />
 
             <Spinner
-                android:id="@+id/name"
+                android:id="@+id/names"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
