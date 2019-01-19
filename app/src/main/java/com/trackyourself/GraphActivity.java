@@ -77,19 +77,13 @@ public class GraphActivity extends AppCompatActivity {
         float value =0f;
 
         ////////////////////////////////to finish//////////////////////////
-
+        int y =0;
         for (Map.Entry<String, Integer> time : hashMap.entrySet()) {
-            int y =0;
-            for (String list : dates ){
-                if (time.getKey().equals(list))
-                    break;
-                else
-                    y++;
 
-            }
+
             barEntries.add(new BarEntry(time.getValue(),y));
 
-
+            y++;
         }
         /////////////////////////////////////////////
 
