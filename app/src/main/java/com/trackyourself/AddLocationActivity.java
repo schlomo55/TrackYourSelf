@@ -70,12 +70,13 @@ public class AddLocationActivity extends Activity implements View.OnClickListene
                 getCurrentLocation(this);
                 break;
             case R.id.addRemain:
-                String name = names.getSelectedItem().toString();
-                if(name.equals("") || remainTime.getText().toString().equals("")){
+                if(names.getSelectedItem()==null ||names.getSelectedItem().toString().equals("") || remainTime.getText().toString().equals("")){
+
                     Toast.makeText(this, "Please add valid data", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                
+                String name = names.getSelectedItem().toString();
+
                 int time = Integer.parseInt(remainTime.getText().toString());
                 LocalDateTime now = LocalDateTime.now();
                 Date from = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
